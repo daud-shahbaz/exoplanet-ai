@@ -1,0 +1,98 @@
+{
+  "kepler": {
+    "rows": 8214,
+    "class_counts": {
+      "FALSE_POSITIVE": 4640,
+      "CONFIRMED": 1943,
+      "CANDIDATE": 1631
+    },
+    "missing_counts": {
+      "star_id": 0,
+      "mission": 0,
+      "label": 0,
+      "orbital_period": 0,
+      "transit_duration": 0,
+      "transit_depth": 299,
+      "planet_radius": 299,
+      "impact_parameter": 299,
+      "transit_snr": 8214,
+      "mes": 8214,
+      "stellar_teff": 299,
+      "stellar_logg": 299,
+      "stellar_radius": 299,
+      "mag": 1
+    }
+  },
+  "k2": {
+    "rows": 1560,
+    "class_counts": {
+      "CANDIDATE": 912,
+      "CONFIRMED": 399,
+      "FALSE_POSITIVE": 249
+    },
+    "missing_counts": {
+      "star_id": 0,
+      "mission": 0,
+      "label": 0,
+      "orbital_period": 22,
+      "transit_duration": 1560,
+      "transit_depth": 1560,
+      "planet_radius": 427,
+      "impact_parameter": 1560,
+      "transit_snr": 1560,
+      "mes": 1560,
+      "stellar_teff": 497,
+      "stellar_logg": 668,
+      "stellar_radius": 65,
+      "mag": 1560
+    }
+  },
+  "tess": {
+    "rows": 7408,
+    "class_counts": {
+      "CANDIDATE": 4981,
+      "FALSE_POSITIVE": 1282,
+      "CONFIRMED": 1145
+    },
+    "missing_counts": {
+      "star_id": 0,
+      "mission": 0,
+      "label": 0,
+      "orbital_period": 92,
+      "transit_duration": 0,
+      "transit_depth": 0,
+      "planet_radius": 504,
+      "impact_parameter": 7408,
+      "transit_snr": 7408,
+      "mes": 7408,
+      "stellar_teff": 160,
+      "stellar_logg": 853,
+      "stellar_radius": 505,
+      "mag": 7408
+    }
+  },
+  "combined": {
+    "rows": 17182,
+    "class_counts": {
+      "CANDIDATE": 7524,
+      "FALSE_POSITIVE": 6171,
+      "CONFIRMED": 3487
+    },
+    "missing_counts": {
+      "star_id": 0,
+      "mission": 0,
+      "label": 0,
+      "orbital_period": 114,
+      "transit_duration": 1560,
+      "transit_depth": 1859,
+      "planet_radius": 1230,
+      "impact_parameter": 9267,
+      "transit_snr": 17182,
+      "mes": 17182,
+      "stellar_teff": 956,
+      "stellar_logg": 1820,
+      "stellar_radius": 869,
+      "mag": 8969
+    }
+  }
+}
