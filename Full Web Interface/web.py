@@ -7,16 +7,16 @@ st.title("Exoplanet Detector 🪐")
 #Importing the models from files using pickle
 
 
-with open('XGB.pkl','rb') as file: 
+with open('Full Web Interface/XGB.pkl','rb') as file: 
     XGB=pickle.load(file)
 
-with open('XGB_scaler.pkl','rb') as file: 
+with open('Full Web Interface/XGB_scaler.pkl','rb') as file: 
     scaler=pickle.load( file)
 
-with open('LGBM.pkl','rb') as file: 
+with open('Full Web Interface/LGBM.pkl','rb') as file: 
     LGBM=pickle.load( file)
 
-with open('cat.pkl','rb') as file: 
+with open('Full Web Interface/cat.pkl','rb') as file: 
     cat=pickle.load( file)
 
 
