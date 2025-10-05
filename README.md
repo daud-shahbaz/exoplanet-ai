@@ -9,7 +9,7 @@ AI-powered system to detect exoplanets using NASA's Kepler telescope data. Built
 ## 👥 Team
 
 1. **Daud Shahbaz** - Team Lead
-2. **Abdul Muiz** - Strategy Lead
+2. **Abdul Muizz** - Strategy Lead
 3. **Aswad Sheeraz** - AI Lead
 4. **Sameed Irfan** - Web Lead
 5. **Abiha Azhar** - Documentation Lead
