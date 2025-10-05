@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA Exoplanet Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌌 NASA Exoplanet Detection System</h1>
+            <p class="subtitle">Advanced Deep Learning for Space Apps Challenge 2025</p>
+            <div class="model-info">
+                <span class="badge">3-Model Ensemble</span>
+                <span class="badge">DNN + CNN + LSTM</span>
+                <span class="badge">Accuracy: {{ "%.1f"|format(performance.ensemble.accuracy * 100) }}%</span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Tab Navigation -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="showTab('manual')">Manual Input</button>
+                <button class="tab-btn" onclick="showTab('upload')">Upload File</button>
+                <button class="tab-btn" onclick="showTab('visualize')">Visualizations</button>
+                <button class="tab-btn" onclick="showTab('about')">About</button>
+            </div>
+
+            <!-- Manual Input Tab -->
+            <div id="manual-tab" class="tab-content active">
+                <h2>🔍 Single Exoplanet Detection</h2>
+                <p class="info-text">Enter values for key orbital and stellar parameters (0-100 scale for easy testing)</p>
+                
+                <div class="input-grid">
+                    {% for feature in features %}
+                    <div class="input-group">
+                        <label for="{{ feature }}">
+                            {{ feature.replace('koi_', '').replace('_', ' ').title() }}
+                            <span class="importance-badge" style="opacity: {{ importance[feature] }}">
+                                Importance: {{ "%.2f"|format(importance[feature]) }}
+                            </span>
+                        </label>
+                        <input type="range" id="{{ feature }}" name="{{ feature }}" 
+                               min="0" max="100" value="50" step="0.1"
+                               oninput="updateValue('{{ feature }}')">
+                        <span class="value-display" id="{{ feature }}-value">50</span>
+                        <span class="slider-hint">Drag slider (astronomical value shown)</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button class="btn-primary" onclick="predictManual()">
+                    🚀 Detect Exoplanet
+                </button>
+
+                <div id="manual-result" class="result-container" style="display: none;">
+                    <div class="result-header">
+                        <h3 id="result-prediction"></h3>
+                        <div class="probability-meter">
+                            <div class="probability-bar" id="probability-bar"></div>
+                        </div>
+                        <p id="result-confidence"></p>
+                    </div>
+
+                    <div class="model-scores">
+                        <h4>Individual Model Scores:</h4>
+                        <div class="score-grid">
+                            <div class="score-item">
+                                <span class="model-name">DNN</span>
+                                <div class="score-bar-container">
+                                    <div class="score-bar dnn-bar" id="dnn-bar"></div>
+                                </div>
+                                <span id="dnn-score"></span>
+                            </div>
+                            <div class="score-item">
+                                <span class="model-name">CNN</span>
+                                <div class="score-bar-container">
+                                    <div class="score-bar cnn-bar" id="cnn-bar"></div>
+                                </div>
+                                <span id="cnn-score"></span>
+                            </div>
+                            <div class="score-item">
+                                <span class="model-name">LSTM</span>
+                                <div class="score-bar-container">
+                                    <div class="score-bar lstm-bar" id="lstm-bar"></div>
+                                </div>
+                                <span id="lstm-score"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-contributions">
+                        <h4>Top Feature Contributions:</h4>
+                        <div id="contributions-chart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload File Tab -->
+            <div id="upload-tab" class="tab-content">
+                <h2>📁 Batch Exoplanet Detection</h2>
+                <p class="info-text">Upload a CSV file with multiple observations for batch analysis</p>
+                
+                <div class="upload-container">
+                    <input type="file" id="file-input" accept=".csv" onchange="handleFileSelect()">
+                    <label for="file-input" class="file-label">
+                        <span class="upload-icon">📤</span>
+                        <span id="file-name">Choose CSV file...</span>
+                    </label>
+                    <button class="btn-primary" onclick="predictFile()" id="upload-btn" disabled>
+                        🔬 Analyze Dataset
+                    </button>
+                </div>
+
+                <div id="upload-result" class="result-container" style="display: none;">
+                    <div class="batch-stats">
+                        <div class="stat-card">
+                            <h3 id="total-count">0</h3>
+                            <p>Total Observations</p>
+                        </div>
+                        <div class="stat-card success">
+                            <h3 id="detected-count">0</h3>
+                            <p>Exoplanets Detected</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3 id="detection-rate">0%</h3>
+                            <p>Detection Rate</p>
+                        </div>
+                    </div>
+
+                    <div class="results-table-container">
+                        <h4>Detection Results:</h4>
+                        <table id="results-table" class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Prediction</th>
+                                    <th>Probability</th>
+                                    <th>Confidence</th>
+                                    <th>DNN</th>
+                                    <th>CNN</th>
+                                    <th>LSTM</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-tbody">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="batch-chart"></div>
+                </div>
+            </div>
+
+            <!-- Visualizations Tab -->
+            <div id="visualize-tab" class="tab-content">
+                <h2>📊 Model Visualizations</h2>
+                
+                <div class="viz-grid">
+                    <div class="viz-card">
+                        <h3>Feature Importance</h3>
+                        <div id="importance-chart"></div>
+                    </div>
+
+                    <div class="viz-card">
+                        <h3>Model Performance Comparison</h3>
+                        <div id="performance-chart"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Tab -->
+            <div id="about-tab" class="tab-content">
+                <h2>ℹ️ About This System</h2>
+                
+                <div class="about-content">
+                    <h3>🎯 Mission</h3>
+                    <p>Advanced AI system for detecting exoplanets using deep learning, developed for the NASA Space Apps Challenge 2025.</p>
+
+                    <h3>🤖 Technology Stack</h3>
+                    <ul>
+                        <li><strong>Deep Neural Network (DNN):</strong> Primary model with 5 dense layers for complex pattern recognition</li>
+                        <li><strong>Convolutional Neural Network (CNN):</strong> Detects spatial patterns in feature space</li>
+                        <li><strong>Long Short-Term Memory (LSTM):</strong> Captures temporal dependencies in transit data</li>
+                    </ul>
+
+                    <h3>📈 Performance Metrics</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <h4>{{ "%.2f"|format(performance.ensemble.accuracy * 100) }}%</h4>
+                            <p>Ensemble Accuracy</p>
+                        </div>
+                        <div class="metric-card">
+                            <h4>{{ "%.4f"|format(performance.ensemble.roc_auc) }}</h4>
+                            <p>ROC-AUC Score</p>
+                        </div>
+                        <div class="metric-card">
+                            <h4>{{ features|length }}</h4>
+                            <p>Key Features</p>
+                        </div>
+                    </div>
+
+                    <h3>🔑 Key Features for Detection</h3>
+                    <ol>
+                        {% for feature in features[:5] %}
+                        <li><strong>{{ feature }}:</strong> Importance {{ "%.2f"|format(importance[feature]) }}</li>
+                        {% endfor %}
+                    </ol>
+
+                    <h3>👥 Our Team</h3>
+                    <p style="margin-bottom: 20px;">Developed by a dedicated team of 6 members for NASA Space Apps Challenge 2025</p>
+                    
+                    <div class="team-grid">
+                        <div class="team-member team-lead">
+                            <div class="member-icon">👨‍💻</div>
+                            <h4>Daud Shahbaz</h4>
+                            <p class="role">Team Lead</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-icon">👨‍💻</div>
+                            <h4>Abdul Muiz</h4>
+                            <p class="role">Team Member</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-icon">👨‍💻</div>
+                            <h4>Aswad Sheeraz</h4>
+                            <p class="role">Team Member</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-icon">👨‍💻</div>
+                            <h4>Sameed Irfan</h4>
+                            <p class="role">Team Member</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-icon">👩‍💻</div>
+                            <h4>Abiha Azhar</h4>
+                            <p class="role">Team Member</p>
+                        </div>
+                        <div class="team-member">
+                            <div class="member-icon">👩‍💻</div>
+                            <h4>Maheen Sajid</h4>
+                            <p class="role">Team Member</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{
+  "feature_names": [
+    "koi_period",
+    "koi_depth",
+    "koi_duration",
+    "koi_prad",
+    "koi_teq",
+    "koi_insol",
+    "koi_steff",
+    "koi_slogg",
+    "koi_srad",
+    "koi_impact"
+  ],
+  "feature_importance": {
+    "koi_steff": 0.18440164092734157,
+    "koi_teq": 0.18023537914225196,
+    "koi_depth": 0.16755789097242083,
+    "koi_slogg": 0.1506384135079835,
+    "koi_duration": 0.13265649334577473,
+    "koi_srad": 0.06807596118249862,
+    "koi_impact": 0.05667484543611323,
+    "koi_insol": 0.029488333093381724,
+    "koi_period": 0.022508323417745203,
+    "koi_prad": 0.01987289229483009
+  },
+  "target_column": "koi_disposition",
+  "model_performance": {
+    "dnn": {
+      "accuracy": 0.8044955567171981,
+      "roc_auc": 0.8927308516150398
+    },
+    "cnn": {
+      "accuracy": 0.825405122843701,
+      "roc_auc": 0.8951052032754836
+    },
+    "lstm": {
+      "accuracy": 0.7919498170412964,
+      "roc_auc": 0.8698379885582423
+    },
+    "ensemble": {
+      "accuracy": 0.8248823836905385,
+      "roc_auc": 0.8999380371670166
+    }
+  },
+  "training_samples": 7651,
+  "test_samples": 1913,
+  "confirmed_planets_train": 2197,
+  "confirmed_planets_test": 549
+}
